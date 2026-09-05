@@ -224,7 +224,7 @@ document.addEventListener('click', function(e) {
 
     let paused = false;
     let resumeTimer = null;
-    const SLIDE_INTERVAL = 4500; // 4.5s per advance - slow, premium
+    const SLIDE_INTERVAL = 2200; // faster - user notices horizontal scroll exists
 
     const advance = () => {
       if (paused) return;
@@ -273,6 +273,67 @@ document.addEventListener('click', function(e) {
         advance();
       }
     }, SLIDE_INTERVAL);
+  });
+})();
+
+/* ============================================
+   V11 - Tap to zoom on gallery slides
+   Tap a slide to zoom in. Tap it again, tap elsewhere,
+   or swipe the track to zoom back out.
+   ============================================ */
+(function () {
+  'use strict';
+
+  const tracks = document.querySelectorAll('.ag-track');
+  if (!tracks.length) return;
+
+  const allZoomed = new Set();
+
+  const zoomOut = (slide) => {
+    if (!slide) return;
+    slide.classList.remove('ag-zoomed');
+    allZoomed.delete(slide);
+    if (slide._agKeepAlive) {
+      clearInterval(slide._agKeepAlive);
+      slide._agKeepAlive = null;
+    }
+  };
+
+  const zoomOutAll = () => {
+    allZoomed.forEach((s) => zoomOut(s));
+  };
+
+  tracks.forEach((track) => {
+    const slides = Array.from(track.querySelectorAll('.ag-slide'));
+
+    slides.forEach((slide) => {
+      slide.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const wasZoomed = slide.classList.contains('ag-zoomed');
+        zoomOutAll();
+        if (!wasZoomed) {
+          slide.classList.add('ag-zoomed');
+          allZoomed.add(slide);
+          // Keep auto-slide paused while a slide is zoomed in
+          slide._agKeepAlive = setInterval(() => {
+            track.dispatchEvent(new Event('mousedown'));
+          }, 5000);
+          track.dispatchEvent(new Event('mousedown'));
+        }
+      });
+    });
+
+    // Swiping / scrolling the track zooms everything back out
+    track.addEventListener('scroll', () => { zoomOutAll(); }, { passive: true });
+    track.addEventListener('touchmove', () => { zoomOutAll(); }, { passive: true });
+  });
+
+  // Tapping anywhere outside a slide zooms out too
+  document.addEventListener('click', (e) => {
+    if (allZoomed.size && !e.target.closest('.ag-slide')) {
+      zoomOutAll();
+    }
   });
 })();
 
