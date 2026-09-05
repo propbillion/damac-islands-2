@@ -5493,3 +5493,18 @@ letter-spacing: 0.045em !important;
   font-weight: 600;
   color: rgba(249, 251, 253, 0.85);
 }
+
+/* Header logo - actual DAMAC Islands 2 logo image (replaces text wordmark) */
+.logo-img {
+  display: flex;
+  align-items: center;
+  height: auto;
+}
+.logo-img img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+@media (max-width: 640px) {
+  .logo-img img { height: 26px; }
+}
