@@ -1874,8 +1874,8 @@ input:focus-visible {
 
 .ag-slide {
   flex: 0 0 92vw;
-  max-width: 640px;
-  aspect-ratio: 16 / 9;
+  max-width: 900px;
+  aspect-ratio: 1280 / 452;
   border-radius: 18px;
   overflow: hidden;
   scroll-snap-align: start;
@@ -1884,7 +1884,7 @@ input:focus-visible {
   background: var(--mist);
 }
 @media (min-width: 768px) {
-  .ag-slide { flex: 0 0 780px; max-width: 780px; border-radius: 22px; }
+  .ag-slide { flex: 0 0 1100px; max-width: 1280px; border-radius: 22px; }
 }
 .ag-slide img {
   width: 100%;
